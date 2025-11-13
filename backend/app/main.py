@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from http import HTTPStatus
 from dotenv import load_dotenv
 from app.api.endpoints import agent
+from app.api.endpoints import auth
 
 load_dotenv()
 print(os.getenv("OPENAI_API_KEY"))
@@ -19,6 +20,7 @@ app = FastAPI(
 )
 
 API_PREFIX = "/api/v1"
+app.include_router(auth.router, prefix=API_PREFIX, tags=["Auth"])
 app.include_router(agent.router, prefix=API_PREFIX, tags=["Writer Agent"])
 
 @app.get("/", tags=["Root"])

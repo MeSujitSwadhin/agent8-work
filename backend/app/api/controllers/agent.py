@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import logging
 from datetime import datetime, timezone
 from uuid import uuid4
@@ -6,9 +7,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.db.postgres import Post, SessionLocal
 
+
 logger = logging.getLogger("post_crud")
 logging.basicConfig(level=logging.INFO)
-
 
 class PostCRUD:
     def __init__(self):
@@ -19,7 +20,7 @@ class PostCRUD:
             logger.error(f"Failed to initialize PostgreSQL session: {e}")
             raise RuntimeError(f"PostgreSQL session initialization failed: {e}")
 
-    # ✅ Create
+
     def create_post(self, post_data: dict):
         try:
             now_utc = datetime.now(timezone.utc)
@@ -38,31 +39,28 @@ class PostCRUD:
             self.db.add(post)
             self.db.commit()
             self.db.refresh(post)
-            logger.info(f"Post created successfully (postId={post.postId})")
             return {
-                "postId": post.postId,
                 "topic": post.topic,
                 "blog": post.blog,
                 "linkedin": post.linkedin,
                 "whatsapp": post.whatsapp,
-                "status": post.status,
-                "createdAt": post.createdAt.isoformat(),
-                "updatedAt": post.updatedAt.isoformat(),
+                "status": post.status
             }
 
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"SQLAlchemy error creating post: {e}")
-            raise
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Failed to create post.")
         finally:
             self.db.close()
+
 
     def update_post_images(self, post_id: str, image_meta: list):
         try:
             self.db = SessionLocal()
             post = self.db.query(Post).filter(Post.postId == post_id).first()
             if not post:
-                raise HTTPException(status_code=404, detail="Post not found")
+                raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Post not found")
 
             post.images = image_meta
             post.updatedAt = datetime.now(timezone.utc)
@@ -71,17 +69,12 @@ class PostCRUD:
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"SQLAlchemy error updating images: {e}")
-            raise
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Failed to update images.")
         finally:
             self.db.close()
 
-    # ✅ Read
+ 
     def get_post_by_id(self, post_id: str, platform: str | None = None):
-        """
-        Fetch a post by its ID.
-        - If `platform` is provided, return that specific field (blog/linkedin/whatsapp) + images + status.
-        - Otherwise, return all platforms with images and status.
-        """
         try:
             post = self.db.query(Post).filter(Post.postId == post_id).first()
             if not post:
@@ -106,8 +99,6 @@ class PostCRUD:
                     "images": images,
                     "status": post.status,
                 }
-
-            # ✅ No platform → return full post
             logger.info(f"Post retrieved successfully (postId={post_id})")
             return {
                 "blog": post.blog,
@@ -118,15 +109,12 @@ class PostCRUD:
             }
 
         except SQLAlchemyError as e:
-            logger.error(f"SQLAlchemy error fetching post: {e}")
-            raise
+            logger.error(f"SQLAlchemy error fetching post by ID: {e}")
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Failed to fetch posts.")
         finally:
             self.db.close()
 
 
-
-
-    # ✅ Update
     def update_status(self, post_id: str, new_status: str):
         try:
             post = self.db.query(Post).filter(Post.postId == post_id).first()
@@ -141,17 +129,13 @@ class PostCRUD:
             return post
 
         except SQLAlchemyError as e:
-            self.db.rollback()
-            logger.error(f"SQLAlchemy error updating post: {e}")
-            raise
+            logger.error(f"SQLAlchemy error updating status: {e}")
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Failed to update status.")
         finally:
             self.db.close()
 
-    # ✅ Fetch All (with optional status filter)
-    def get_all_posts(self, status: str | None = None):
-        """
-        Fetch all posts from the PostgreSQL table, optionally filtered by status.
-        """
+ 
+    def get_all_posts(self, status: str):
         try:
             query = self.db.query(Post)
             if status:
@@ -179,7 +163,7 @@ class PostCRUD:
             return result
 
         except SQLAlchemyError as e:
-            logger.error(f"SQLAlchemy error fetching posts: {e}")
-            raise
+            logger.error(f"Error fetching posts: {e}")
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Failed to fetch posts.")
         finally:
             self.db.close()

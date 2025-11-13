@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional, Dict
-from datetime import datetime
 import uuid
+from typing import Optional
+from datetime import datetime
+from pydantic import BaseModel
 
 
 class BlogContent(BaseModel):

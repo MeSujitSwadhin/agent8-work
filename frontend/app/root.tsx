@@ -15,6 +15,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { SnackbarProvider } from "notistack";
 
 
 const clientSideEmotionCache = createEmotionCache();
@@ -24,14 +25,20 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <CacheProvider value={clientSideEmotionCache}>
         <ThemeProvider theme={theme}>
-          <RequestInterceptor />
-          <ResponseInterceptor />
-          <CssBaseline />
-          <Outlet />
-          <Meta />
-          <Links />
-          <ScrollRestoration />
-          <Scripts />
+          <SnackbarProvider
+            maxSnack={5}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            autoHideDuration={5000}
+          >
+            <RequestInterceptor />
+            <ResponseInterceptor />
+            <CssBaseline />
+            <Outlet />
+            <Meta />
+            <Links />
+            <ScrollRestoration />
+            <Scripts />
+          </SnackbarProvider>
         </ThemeProvider>
       </CacheProvider>
     </QueryClientProvider >

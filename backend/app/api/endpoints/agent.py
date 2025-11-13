@@ -3,15 +3,20 @@ from http import HTTPStatus
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from app.api.controllers.agent import PostCRUD
-from app.utils.google_drive import upload_file_to_drive
-from app.utils.groq_writer import generate_drafts_with_langchain
 from app.schemas.content import TopicInput, ApproveIn, PublishIn
-from app.utils.open_ai import generate_image_and_upload
+from app.utils.content_service import ContentService
+from app.utils.image_service import ImageService
+from app.core.model_registry import ModelRegistry
 
 router = APIRouter()
 logger = logging.getLogger("post_agent")
 logging.basicConfig(level=logging.INFO)
 
+registry = ModelRegistry()
+
+# Pass registry to both services
+content_service = ContentService(registry)
+image_service = ImageService(registry)
 
 @router.post("/generate")
 async def generate_content(payload: TopicInput):
@@ -20,7 +25,7 @@ async def generate_content(payload: TopicInput):
             raise HTTPException(status_code=400, detail="At least one topic is required")
 
 
-        drafts = generate_drafts_with_langchain(payload.topics)
+        drafts = content_service.generate_content(payload.topics)
 
         post_data = {
             "topic": payload.topics,
@@ -37,7 +42,7 @@ async def generate_content(payload: TopicInput):
         image_meta = []
         if getattr(payload, "image_generated", False):
             logger.info(f"[Generate] Generating images for postId={post['postId']}")
-            image_meta = generate_image_and_upload(payload.topics, count=2)
+            image_meta = image_service.generate_images(topic=payload.topics, count=1)
             controller.update_post_images(post["postId"], image_meta)
 
         response_data = {**post, "images": image_meta}
@@ -82,7 +87,7 @@ async def approve_post(payload: ApproveIn):
 
     except Exception as e:
         logger.exception("[Approve] Unexpected error during approval.")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @router.post("/publish")
@@ -92,7 +97,7 @@ async def publish_post(payload: PublishIn):
         post_item = controller.get_post_by_id(payload.postId)
 
         if not post_item:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Post not found")
 
         result = {"postId": payload.postId, "platforms": {}}
 
@@ -119,13 +124,7 @@ async def publish_post(payload: PublishIn):
 
 
 @router.get("/posts")
-async def get_all_posts(status: str | None = None):
-    """
-    Fetch all posts, optionally filtered by status.
-    Example:
-      /api/v1/posts → returns all posts
-      /api/v1/posts?status=approved → returns only approved posts
-    """
+async def get_all_posts(status: str):
     try:
         controller = PostCRUD()
         posts = controller.get_all_posts(status)
@@ -146,24 +145,17 @@ async def get_all_posts(status: str | None = None):
 
     except Exception as e:
         logger.exception("[GetAllPosts] Unexpected error while retrieving posts.")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @router.get("/post/id")
 async def get_post_by_id(post_id: str):
-    """
-    Fetch a post by its ID.
-    Optionally, provide ?platform=blog or ?platform=linkedin to get specific data.
-    Example:
-        /api/v1/post/id?post_id=abcd-1234
-        /api/v1/post/id?post_id=abcd-1234&platform=blog
-    """
     try:
         controller = PostCRUD()
         post = controller.get_post_by_id(post_id)
 
         if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="Post not found")
 
         return JSONResponse(
             status_code=HTTPStatus.OK,
@@ -172,4 +164,4 @@ async def get_post_by_id(post_id: str):
 
     except Exception as e:
         logger.exception("[GetByID] Unexpected error fetching post.")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=str(e))

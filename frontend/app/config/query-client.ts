@@ -7,23 +7,20 @@ import {
     MutationFetchOptions,
 } from "../utils/interface/ClientTypeInterfaces";
 
-console.log(`🔹 API Base URLs:
+console.log(`API Base URLs:
   - Main: ${import.meta.env.URL_API_BASE_MAIN}
   - Webhook: ${import.meta.env.URL_API_BASE_WEBHOOK}
   - Public: ${import.meta.env.URL_API_BASE_PUBLIC}
 `);
 
-/* 🔹 Environment-based Base URLs */
 export const BASE_API_MAIN = import.meta.env.URL_API_BASE_MAIN;
 export const BASE_API_WEBHOOK = import.meta.env.URL_API_BASE_WEBHOOK;
 export const BASE_API_PUBLIC = import.meta.env.URL_API_BASE_PUBLIC;
 
-/* 🔹 Axios Clients */
 export const client = axios.create({ baseURL: BASE_API_MAIN });
 export const webhookClient = axios.create({ baseURL: BASE_API_WEBHOOK });
 export const publicClient = axios.create({ baseURL: BASE_API_PUBLIC });
 
-/* 🔹 Helper: Select client based on base type */
 function getClient(base?: "main" | "webhook" | "public") {
     switch (base) {
         case "webhook":
@@ -31,11 +28,10 @@ function getClient(base?: "main" | "webhook" | "public") {
         case "public":
             return publicClient;
         default:
-            return client; // main API default
+            return client;
     }
 }
 
-/* 🔹 Token Setup (shared across all clients) */
 export function setupToken(token?: string): void {
     const clients = [client, webhookClient, publicClient];
     for (const c of clients) {
@@ -47,7 +43,6 @@ export function setupToken(token?: string): void {
     }
 }
 
-/* 🔹 Query Fetcher (GET requests) */
 export async function queryFetch<T>({
     url,
     inputParams,
@@ -65,7 +60,6 @@ export async function queryFetch<T>({
     }
 }
 
-/* 🔹 Mutation Fetcher (POST, PUT, DELETE JSON) */
 export async function mutationFetch<T>({
     url,
     method,
@@ -90,7 +84,6 @@ export async function mutationFetch<T>({
     }
 }
 
-/* 🔹 Mutation for Form Data (less used, kept for compatibility) */
 export async function mutationFormData<T>({
     url,
     body,
@@ -111,7 +104,6 @@ export async function mutationFormData<T>({
     }
 }
 
-/* 🔹 Server-side query (supports token) */
 export async function queryFetchServer<T>({
     url,
     inputParams,
@@ -132,7 +124,7 @@ export async function queryFetchServer<T>({
         });
         data = res.data as T;
     } catch (err: any) {
-        console.error("❌ queryFetchServer error:", err);
+        console.error("queryFetchServer error:", err);
         isError = true;
         error = err.response?.data ?? null;
     }
@@ -140,13 +132,12 @@ export async function queryFetchServer<T>({
     return { data, isError, error };
 }
 
-/* 🔹 React Query Global Client */
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             retry: false,
             refetchOnWindowFocus: false,
-            staleTime: 60 * 1000, // 1 minute cache
+            staleTime: 60 * 1000,
         },
     },
 });

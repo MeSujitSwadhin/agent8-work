@@ -1,5 +1,5 @@
-from typing import List, Optional
 from pydantic import BaseModel
+from typing import List, Optional
 
 
 class TopicInput(BaseModel):
@@ -28,5 +28,3 @@ class PublishOut(BaseModel):
     postId: str
     platforms: List[str]
     message: str
-
-

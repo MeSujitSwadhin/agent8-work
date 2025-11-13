@@ -18,7 +18,6 @@ export function generateTopic(
 ) {
     return useMutation<MessageResult, ApiError, GenerateTopicData>({
         mutationFn: async ({ topic, image_generated }) => {
-            // ✅ match your FastAPI endpoint exactly:
             return await mutationFetch({
                 url: "/generate-topic",
                 method: "POST",
