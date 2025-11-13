@@ -1,0 +1,152 @@
+[
+    {
+        "postId": "ee3aa5a3-92fa-4fd6-8690-f7c872adf851",
+        "topic": "OLA Bike review",
+        "status": "Generated",
+        "createdAt": "2025-10-31T08:00:06.636339",
+        "updatedAt": "2025-10-31T08:00:06.636339",
+        "blog": {
+            "title": "OLA Bike Review: A Comprehensive Analysis",
+            "content": "The OLA Bike is a popular e-bike brand that has gained significant attention in recent years. In this review, we'll delve into its features, pros, and cons to help you decide. With a stylish design, powerful motor, and long-lasting battery, it's ideal for both beginners and experienced riders. The OLA Bike offers throttle and pedal-assist modes for versatile riding. While some users mention app connectivity issues, the overall experience is smooth and reliable. Tags: e-bike review, OLA Bike, electric bicycle.",
+            "tags": [
+                "e-bike review",
+                "OLA Bike",
+                "electric bicycle",
+                "OLA Bike review"
+            ]
+        },
+        "linkedin": {
+            "title": "Experience the Power of OLA Bike",
+            "content": "Looking to upgrade your commute? The OLA Bike blends style, power, and convenience with its sleek design, long-lasting battery, and throttle mode. Whether you’re an experienced cyclist or a beginner, this e-bike is worth exploring. Join the conversation — what’s your favorite e-bike feature?",
+            "tags": [
+                "e-bike",
+                "OLA Bike",
+                "electric bicycle",
+                "commuting"
+            ]
+        },
+        "whatsapp": {
+            "message": "Just tried the OLA Bike! ⚡ Powerful motor, long battery, and super comfortable. Perfect for daily commutes!"
+        }
+    },
+    {
+        "postId": "42df2a77-4ab3-4b3b-9a9a-54ef7c9c77df",
+        "topic": "EV Charging Trends 2025",
+        "status": "Generated",
+        "createdAt": "2025-10-30T09:30:00.000000",
+        "updatedAt": "2025-10-30T09:30:00.000000",
+        "blog": {
+            "title": "EV Charging Trends to Watch in 2025",
+            "content": "The electric vehicle charging landscape is evolving rapidly. In 2025, expect to see ultra-fast chargers, solar-integrated stations, and AI-based load balancing. As governments push for zero-emission goals, EV infrastructure investment is set to surge. Businesses adopting smart charging solutions will gain a competitive edge. Tags: EV charging, sustainability, green tech, future mobility.",
+            "tags": [
+                "EV charging",
+                "sustainability",
+                "green tech",
+                "future mobility"
+            ]
+        },
+        "linkedin": {
+            "title": "The Future of EV Charging is Here",
+            "content": "EV charging is transforming the way we think about transportation. From AI-driven grids to solar-powered hubs, 2025 will be the year of innovation. How ready is your business for the EV revolution?",
+            "tags": [
+                "EV charging",
+                "clean tech",
+                "smart mobility",
+                "innovation"
+            ]
+        },
+        "whatsapp": {
+            "message": "Charging ahead ⚡ EV tech in 2025 means faster, smarter, and greener charging everywhere you go!"
+        }
+    },
+    {
+        "postId": "88f97e31-812c-4d3b-a8f1-5d9c77ea2f11",
+        "topic": "Sustainable Battery Recycling",
+        "status": "Generated",
+        "createdAt": "2025-10-29T10:45:00.000000",
+        "updatedAt": "2025-10-29T10:45:00.000000",
+        "blog": {
+            "title": "The Importance of Battery Recycling in a Sustainable Future",
+            "content": "Battery recycling is vital to the circular economy. As EV adoption grows, managing lithium-ion waste is a global challenge. Emerging recycling technologies are improving material recovery rates, reducing mining dependency, and minimizing environmental impact. Tags: battery recycling, sustainability, EV waste, clean tech.",
+            "tags": [
+                "battery recycling",
+                "sustainability",
+                "EV waste",
+                "clean tech"
+            ]
+        },
+        "linkedin": {
+            "title": "Recycling Batteries for a Greener Tomorrow",
+            "content": "Did you know 95% of EV batteries can be repurposed or recycled? ♻️ Innovations in lithium-ion recycling are changing the game for clean energy sustainability. Learn how your organization can contribute.",
+            "tags": [
+                "sustainability",
+                "battery recycling",
+                "EV",
+                "green future"
+            ]
+        },
+        "whatsapp": {
+            "message": "♻️ Recycling batteries = saving the planet! Every recycled EV battery brings us closer to a cleaner future."
+        }
+    },
+    {
+        "postId": "6b9f3c45-2a54-4a4e-8f3b-98a12ffbc871",
+        "topic": "Smart Mobility Solutions",
+        "status": "Generated",
+        "createdAt": "2025-10-28T11:15:00.000000",
+        "updatedAt": "2025-10-28T11:15:00.000000",
+        "blog": {
+            "title": "Smart Mobility: Redefining Urban Transportation",
+            "content": "Cities worldwide are adopting smart mobility to tackle congestion and pollution. Integrating EVs, public transport, and micro-mobility under a unified digital platform ensures seamless travel. Data-driven infrastructure and IoT sensors make commuting efficient and eco-friendly. Tags: smart mobility, IoT, urban planning, EV integration.",
+            "tags": [
+                "smart mobility",
+                "IoT",
+                "urban planning",
+                "EV integration"
+            ]
+        },
+        "linkedin": {
+            "title": "How Smart Mobility is Transforming Urban Travel",
+            "content": "From e-scooters to connected EVs, smart mobility is redefining urban living. AI-powered traffic optimization and real-time monitoring are shaping the cities of tomorrow.",
+            "tags": [
+                "smart city",
+                "mobility",
+                "EV",
+                "AI"
+            ]
+        },
+        "whatsapp": {
+            "message": "🚗💡 Smart mobility = smarter cities! Tech-driven transport is making urban travel faster and greener."
+        }
+    },
+    {
+        "postId": "2db62b8d-1a6c-4c0a-b0af-52364ac9ce23",
+        "topic": "Solar-Powered EV Charging",
+        "status": "Generated",
+        "createdAt": "2025-10-27T12:00:00.000000",
+        "updatedAt": "2025-10-27T12:00:00.000000",
+        "blog": {
+            "title": "Harnessing Solar Power for EV Charging",
+            "content": "Solar-powered EV charging is revolutionizing green transportation. By integrating renewable energy with charging infrastructure, operators can reduce costs and carbon emissions. With advancements in battery storage and panel efficiency, solar EV charging is becoming scalable and reliable. Tags: solar EV charging, clean energy, renewable tech, sustainability.",
+            "tags": [
+                "solar EV charging",
+                "clean energy",
+                "renewable tech",
+                "sustainability"
+            ]
+        },
+        "linkedin": {
+            "title": "Charging EVs with the Power of the Sun ☀️",
+            "content": "Solar EV charging is the future of green mobility. Clean, affordable, and scalable — it’s the key to achieving carbon-free transportation.",
+            "tags": [
+                "solar",
+                "EV charging",
+                "clean energy",
+                "innovation"
+            ]
+        },
+        "whatsapp": {
+            "message": "☀️ Plug into the sun! Solar-powered EV charging makes clean travel possible anytime, anywhere."
+        }
+    }
+]

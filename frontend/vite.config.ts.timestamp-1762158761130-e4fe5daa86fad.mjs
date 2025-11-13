@@ -1,0 +1,35 @@
+// vite.config.ts
+import { vitePlugin as remix } from "file:///D:/WORK_STATION/VIDYUTVA_WORKSTATION/AI/Social_Media_Marketing_AI_UI/node_modules/@remix-run/dev/dist/index.js";
+import { defineConfig } from "file:///D:/WORK_STATION/VIDYUTVA_WORKSTATION/AI/Social_Media_Marketing_AI_UI/node_modules/vite/dist/node/index.js";
+import tsconfigPaths from "file:///D:/WORK_STATION/VIDYUTVA_WORKSTATION/AI/Social_Media_Marketing_AI_UI/node_modules/vite-tsconfig-paths/dist/index.mjs";
+import { flatRoutes } from "file:///D:/WORK_STATION/VIDYUTVA_WORKSTATION/AI/Social_Media_Marketing_AI_UI/node_modules/remix-flat-routes/dist/index.js";
+var vite_config_default = defineConfig({
+  plugins: [
+    remix({
+      ignoredRouteFiles: ["**/*"],
+      routes: async (defineRoutes) => {
+        return flatRoutes("routes", defineRoutes);
+      },
+      future: {
+        v3_fetcherPersist: true,
+        v3_relativeSplatPath: true,
+        v3_throwAbortReason: true
+      }
+    }),
+    tsconfigPaths()
+  ],
+  define: {
+    // By default, Vite doesn't include shims for NodeJS/
+    // necessary for segment analytics lib to work
+    global: {}
+  },
+  server: {
+    host: true,
+    port: 8080
+  },
+  envPrefix: "URL_"
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCJEOlxcXFxXT1JLX1NUQVRJT05cXFxcVklEWVVUVkFfV09SS1NUQVRJT05cXFxcQUlcXFxcU29jaWFsX01lZGlhX01hcmtldGluZ19BSV9VSVwiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9maWxlbmFtZSA9IFwiRDpcXFxcV09SS19TVEFUSU9OXFxcXFZJRFlVVFZBX1dPUktTVEFUSU9OXFxcXEFJXFxcXFNvY2lhbF9NZWRpYV9NYXJrZXRpbmdfQUlfVUlcXFxcdml0ZS5jb25maWcudHNcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfaW1wb3J0X21ldGFfdXJsID0gXCJmaWxlOi8vL0Q6L1dPUktfU1RBVElPTi9WSURZVVRWQV9XT1JLU1RBVElPTi9BSS9Tb2NpYWxfTWVkaWFfTWFya2V0aW5nX0FJX1VJL3ZpdGUuY29uZmlnLnRzXCI7aW1wb3J0IHsgdml0ZVBsdWdpbiBhcyByZW1peCB9IGZyb20gXCJAcmVtaXgtcnVuL2RldlwiO1xyXG5pbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tIFwidml0ZVwiO1xyXG5pbXBvcnQgdHNjb25maWdQYXRocyBmcm9tIFwidml0ZS10c2NvbmZpZy1wYXRoc1wiO1xyXG5pbXBvcnQgeyBmbGF0Um91dGVzIH0gZnJvbSBcInJlbWl4LWZsYXQtcm91dGVzXCI7XHJcblxyXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xyXG4gIHBsdWdpbnM6IFtcclxuICAgIHJlbWl4KHtcclxuICAgICAgaWdub3JlZFJvdXRlRmlsZXM6IFsnKiovKiddLFxyXG4gICAgICByb3V0ZXM6IGFzeW5jIGRlZmluZVJvdXRlcyA9PiB7XHJcbiAgICAgICAgcmV0dXJuIGZsYXRSb3V0ZXMoJ3JvdXRlcycsIGRlZmluZVJvdXRlcylcclxuICAgICAgfSxcclxuICAgICAgZnV0dXJlOiB7XHJcbiAgICAgICAgdjNfZmV0Y2hlclBlcnNpc3Q6IHRydWUsXHJcbiAgICAgICAgdjNfcmVsYXRpdmVTcGxhdFBhdGg6IHRydWUsXHJcbiAgICAgICAgdjNfdGhyb3dBYm9ydFJlYXNvbjogdHJ1ZSxcclxuICAgICAgfSxcclxuICAgIH0pLFxyXG4gICAgdHNjb25maWdQYXRocygpLFxyXG4gIF0sXHJcbiAgZGVmaW5lOiB7XHJcbiAgICAvLyBCeSBkZWZhdWx0LCBWaXRlIGRvZXNuJ3QgaW5jbHVkZSBzaGltcyBmb3IgTm9kZUpTL1xyXG4gICAgLy8gbmVjZXNzYXJ5IGZvciBzZWdtZW50IGFuYWx5dGljcyBsaWIgdG8gd29ya1xyXG4gICAgZ2xvYmFsOiB7fSxcclxuICB9LFxyXG4gIHNlcnZlcjoge1xyXG4gICAgaG9zdDogdHJ1ZSxcclxuICAgIHBvcnQ6IDgwODBcclxuICB9XHJcbiAgLFxyXG4gIGVudlByZWZpeDogJ1VSTF8nXHJcbn0pO1xyXG4iXSwKICAibWFwcGluZ3MiOiAiO0FBQXdZLFNBQVMsY0FBYyxhQUFhO0FBQzVhLFNBQVMsb0JBQW9CO0FBQzdCLE9BQU8sbUJBQW1CO0FBQzFCLFNBQVMsa0JBQWtCO0FBRTNCLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLFNBQVM7QUFBQSxJQUNQLE1BQU07QUFBQSxNQUNKLG1CQUFtQixDQUFDLE1BQU07QUFBQSxNQUMxQixRQUFRLE9BQU0saUJBQWdCO0FBQzVCLGVBQU8sV0FBVyxVQUFVLFlBQVk7QUFBQSxNQUMxQztBQUFBLE1BQ0EsUUFBUTtBQUFBLFFBQ04sbUJBQW1CO0FBQUEsUUFDbkIsc0JBQXNCO0FBQUEsUUFDdEIscUJBQXFCO0FBQUEsTUFDdkI7QUFBQSxJQUNGLENBQUM7QUFBQSxJQUNELGNBQWM7QUFBQSxFQUNoQjtBQUFBLEVBQ0EsUUFBUTtBQUFBO0FBQUE7QUFBQSxJQUdOLFFBQVEsQ0FBQztBQUFBLEVBQ1g7QUFBQSxFQUNBLFFBQVE7QUFBQSxJQUNOLE1BQU07QUFBQSxJQUNOLE1BQU07QUFBQSxFQUNSO0FBQUEsRUFFQSxXQUFXO0FBQ2IsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K
