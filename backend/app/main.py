@@ -8,7 +8,6 @@ from app.api.endpoints import agent
 from app.api.endpoints import auth
 
 load_dotenv()
-print(os.getenv("OPENAI_API_KEY"))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("writer-agent")
