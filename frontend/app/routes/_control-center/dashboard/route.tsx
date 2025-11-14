@@ -22,6 +22,7 @@ import { generateTopic, updateStatus } from "~/services/agent/agent.mutation";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "@remix-run/react";
 import Cookies from "js-cookie";
+import { queryClient } from "~/config/query-client";
 
 export const meta: MetaFunction = () => [
     { title: "Vidyutva | Agentic AI - Social Media Marketing" },
@@ -59,6 +60,7 @@ export default function Index() {
     const { mutate: generatePost, isPending: isGenerating } = generateTopic({
         onSuccess: (data) => {
             enqueueSnackbar("Content generated successfully!. Please check email for approval.", { variant: "success" });
+            queryClient.invalidateQueries({ queryKey: ["posts", "Generated"] });
         },
         onError: () => {
             enqueueSnackbar("Something went wrong while generating!", { variant: "error" });
@@ -67,11 +69,10 @@ export default function Index() {
 
     const { mutate: approvePost } = updateStatus({
         onSuccess: () => {
-            enqueueSnackbar("Content generated successfully!. Please check email for approval.", { variant: "success" });
-            alert("Post approved successfully!");
+            enqueueSnackbar("Post approved successfully!", { variant: "success" });
         },
         onError: () => {
-            alert("Something went wrong!");
+            enqueueSnackbar("Something went wrong while approving!", { variant: "error" });
         },
     });
 
