@@ -40,6 +40,7 @@ class PostCRUD:
             self.db.commit()
             self.db.refresh(post)
             return {
+                "postId": post.postId,
                 "topic": post.topic,
                 "blog": post.blog,
                 "linkedin": post.linkedin,

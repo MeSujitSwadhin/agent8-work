@@ -37,7 +37,7 @@ async def generate_content(payload: TopicInput):
 
         controller = PostCRUD()
         post = controller.create_post(post_data)
-        logger.info(f"Post created successfully")
+        logger.info(f"[Generate] Post created successfully (postId={post['postId']})")
 
         image_meta = []
         if getattr(payload, "image_generated", False):
