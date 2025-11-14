@@ -69,7 +69,7 @@ export default function Index() {
 
     const { mutate: approvePost } = updateStatus({
         onSuccess: () => {
-            enqueueSnackbar("Post approved successfully!", { variant: "success" });
+            enqueueSnackbar("Post approved & published successfully!", { variant: "success" });
         },
         onError: () => {
             enqueueSnackbar("Something went wrong while approving!", { variant: "error" });
