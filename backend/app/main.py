@@ -2,10 +2,12 @@ import os
 import logging
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from http import HTTPStatus
 from dotenv import load_dotenv
 from app.api.endpoints import agent
 from app.api.endpoints import auth
+from app.api.endpoints import upload
 
 load_dotenv()
 
@@ -18,9 +20,18 @@ app = FastAPI(
     description="An AI-powered Writer Agent that generates, reviews, and publishes content across platforms using LangChain and LangGraph.",
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"^https://agent8-ui\.vercel\.app$",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 API_PREFIX = "/api/v1"
 app.include_router(auth.router, prefix=API_PREFIX, tags=["Auth"])
 app.include_router(agent.router, prefix=API_PREFIX, tags=["Writer Agent"])
+app.include_router(upload.router, prefix=API_PREFIX, tags=["File Upload"])
 
 @app.get("/", tags=["Root"])
 async def root():

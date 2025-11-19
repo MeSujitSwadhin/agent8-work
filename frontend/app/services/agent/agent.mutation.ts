@@ -1,5 +1,6 @@
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { mutationFetch } from "~/config/query-client";
+import { UploadResponse } from "~/utils/interface/AgentInterfaces";
 import { ApiError, MessageResult } from "~/utils/interface/ClientTypeInterfaces";
 
 interface GenerateTopicData {
@@ -41,12 +42,30 @@ export function updateStatus(
         mutationFn: async ({ postId, status }) => {
             if (!postId) throw new Error("Post ID not provided");
 
-            // ✅ match your working Postman URL exactly:
             return await mutationFetch({
                 url: "/approve",
                 method: "PUT",
-                base: "webhook", // uses URL_API_BASE_WEBHOOK from .env
+                base: "webhook",
                 body: { postId, status },
+            });
+        },
+        ...options,
+    });
+}
+
+export function uploadScheduleFile(
+    options?: UseMutationOptions<UploadResponse, ApiError, File>
+) {
+    return useMutation<UploadResponse, ApiError, File>({
+        mutationFn: async (file: File) => {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            return await mutationFetch({
+                url: "/api/v1/upload",   // FIXED
+                method: "POST",
+                base: "main",
+                body: formData           // OK, browser handles headers automatically
             });
         },
         ...options,

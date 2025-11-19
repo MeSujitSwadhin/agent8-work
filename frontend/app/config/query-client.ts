@@ -69,13 +69,19 @@ export async function mutationFetch<T>({
     const activeClient = getClient(base);
 
     try {
+        const isFormData = body instanceof FormData;
+
         const res = await activeClient.request({
             url,
             method,
-            headers: { "Content-Type": "application/json" },
+            headers: isFormData
+                ? {} // ❗ Let Axios set correct multipart headers
+                : { "Content-Type": "application/json" },
             data: body,
         });
+
         return res.data;
+
     } catch (error: any) {
         throw {
             status: error.response?.status || 500,
@@ -83,6 +89,7 @@ export async function mutationFetch<T>({
         };
     }
 }
+
 
 export async function mutationFormData<T>({
     url,

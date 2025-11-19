@@ -18,7 +18,7 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePostById, usePosts } from "~/services/agent/agent.query";
-import { generateTopic, updateStatus } from "~/services/agent/agent.mutation";
+import { generateTopic, updateStatus, uploadScheduleFile } from "~/services/agent/agent.mutation";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "@remix-run/react";
 import Cookies from "js-cookie";
@@ -33,7 +33,9 @@ export default function Index() {
     const navigate = useNavigate();
     const [topic, setTopic] = useState("");
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [imageGenerated, setImageGenerated] = useState(false);
+
     const { data: posts, isLoading, isError } = usePosts("Generated");
     const { data: selectedPost, isLoading: isPostLoading } = usePostById(
         selectedPostId ?? undefined,
@@ -58,12 +60,25 @@ export default function Index() {
     };
 
     const { mutate: generatePost, isPending: isGenerating } = generateTopic({
-        onSuccess: (data) => {
+        onSuccess: () => {
             enqueueSnackbar("Content generated successfully!. Please check email for approval.", { variant: "success" });
             queryClient.invalidateQueries({ queryKey: ["posts", "Generated"] });
         },
         onError: () => {
             enqueueSnackbar("Something went wrong while generating!", { variant: "error" });
+        },
+    });
+
+    const { mutate: uploadFile, isPending: isUploading } = uploadScheduleFile({
+        onSuccess: (data) => {
+            enqueueSnackbar(
+                `Uploaded successfully! ${data.eventsCreated.length} events created.`,
+                { variant: "success" }
+            );
+            setSelectedFile(null);
+        },
+        onError: () => {
+            enqueueSnackbar("Upload failed!", { variant: "error" });
         },
     });
 
@@ -76,6 +91,11 @@ export default function Index() {
         },
     });
 
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) setSelectedFile(file);
+    };
+
     const handleSignOut = () => {
         Cookies.remove("access_token");
         enqueueSnackbar("Signed out successfully!", { variant: "success" });
@@ -86,26 +106,14 @@ export default function Index() {
         <Box
             className="min-h-screen flex flex-col items-center px-4 sm:px-6 py-8 sm:py-10"
             sx={{
-                position: "relative",
-                overflow: "hidden",
-                color: "#ffffff",
-                background:
-                    "linear-gradient(135deg, #ff8fc6 0%, #a78bfa 40%, #60a5fa 100%)",
-                backgroundAttachment: "fixed",
+                minHeight: "100vh",
+                width: "100%",
+                backgroundImage: "url('/assets/images/dashboard_bg.webp')",
                 backgroundSize: "cover",
-                "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    background:
-                        "radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3), rgba(255,255,255,0.05))",
-                    mixBlendMode: "overlay",
-                    filter: "blur(120px)",
-                    zIndex: 0,
-                },
+                backgroundPosition: "center",
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
             }}
         >
             <Box
@@ -136,15 +144,30 @@ export default function Index() {
 
             <Box
                 className="flex flex-col items-center gap-4 w-full max-w-5xl"
-                sx={{ position: "relative", zIndex: 2, mb: { xs: 6, md: 10 } }}
+                sx={{ position: "relative", zIndex: 2, mt: { xs: 4, md: 6 } }}
             >
+                <Typography
+                    sx={{
+                        fontSize: { xs: "1.4rem", md: "1.7rem" },
+                        fontWeight: 700,
+                        mb: 1,
+                        textAlign: "center",
+                        background: "linear-gradient(90deg, #1E3A8A, #2563EB, #4F46E5)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                    }}
+                >
+                    Vidyutva Agentic AI Content Generator
+                </Typography>
+
+                {/* Desktop/tablet pill: input + button + switch */}
                 <Box
-                    className="w-full flex flex-col sm:flex-row items-center justify-center gap-3"
+                    className="w-full hidden sm:flex items-center justify-center gap-3"
                     sx={{
                         backgroundColor: "rgba(255,255,255,0.4)",
                         borderRadius: "9999px",
                         px: { xs: 3, sm: 4 },
-                        py: { xs: 2, sm: 2.5 },
+                        py: 2,
                         border: "1px solid rgba(255,255,255,0.3)",
                         backdropFilter: "blur(8px)",
                         boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
@@ -160,11 +183,14 @@ export default function Index() {
                             fullWidth
                             InputProps={{
                                 disableUnderline: true,
-                                style: { color: "#1F2937", fontSize: "1.05rem" },
                             }}
                             sx={{
                                 mx: 2,
-                                input: { "::placeholder": { color: "#6B7280" } },
+                                "& .MuiInputBase-input": {
+                                    py: 0.2,
+                                    fontSize: "0.98rem",
+                                    color: "#1F2937",
+                                },
                             }}
                         />
                     </Box>
@@ -176,14 +202,13 @@ export default function Index() {
                         }
                         sx={{
                             borderRadius: "9999px",
-                            px: { xs: 3, sm: 4 },
+                            px: 3,
                             py: 1,
                             fontWeight: 600,
                             textTransform: "none",
                             background: "#00a181",
                             color: "white",
                             "&:hover": { opacity: 0.9 },
-                            width: { xs: "100%", sm: "auto" },
                         }}
                     >
                         {isGenerating ? "Generating..." : "Generate"}
@@ -199,14 +224,47 @@ export default function Index() {
                         }
                         label="Generate Image"
                         sx={{
-                            ml: { sm: 2 },
-                            mt: { xs: 1, sm: 0 },
+                            ml: 1,
                             '& .MuiFormControlLabel-label': {
                                 color: '#1F2937',
                                 fontSize: '0.9rem',
                             },
                         }}
                     />
+                </Box>
+                <Box
+                    className="w-full flex sm:hidden items-center justify-center gap-3"
+                    sx={{
+                        backgroundColor: "rgba(255,255,255,0.4)",
+                        borderRadius: "9999px",
+                        px: 3,
+                        py: 1.8,
+                        border: "1px solid rgba(255,255,255,0.3)",
+                        backdropFilter: "blur(8px)",
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+                    }}
+                >
+                    <Box className="flex items-center flex-grow w-full">
+                        <Search className="text-gray-700 opacity-80" size={20} />
+                        <TextField
+                            variant="standard"
+                            placeholder="Ask or enter a topic..."
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            fullWidth
+                            InputProps={{
+                                disableUnderline: true,
+                            }}
+                            sx={{
+                                mx: 2,
+                                "& .MuiInputBase-input": {
+                                    py: 0.2,
+                                    fontSize: "0.98rem",
+                                    color: "#1F2937",
+                                },
+                            }}
+                        />
+                    </Box>
                 </Box>
 
                 <Box className="w-full mt-2 overflow-hidden">
@@ -222,6 +280,9 @@ export default function Index() {
                             "Battery Recycling",
                             "Solar Innovation",
                             "Smart Grids",
+                            "Renewable Energy",
+                            "Battery Energy Storage",
+                            "Alternative Fuel Vehicles",
                         ].map((suggestion) => (
                             <Chip
                                 key={suggestion}
@@ -242,14 +303,165 @@ export default function Index() {
                         ))}
                     </motion.div>
                 </Box>
+
+                {/* Mobile: Generate + toggle below chips */}
+                <Box
+                    className="w-full flex sm:hidden flex-col gap-2 mt-3"
+                >
+                    <Button
+                        disabled={!topic.trim() || isGenerating}
+                        onClick={() =>
+                            generatePost({ topic, image_generated: imageGenerated })
+                        }
+                        sx={{
+                            borderRadius: "12px",
+                            px: 3,
+                            py: 1,
+                            fontWeight: 600,
+                            textTransform: "none",
+                            background: "#00a181",
+                            color: "white",
+                            "&:hover": { opacity: 0.9 },
+                            width: "100%",
+                        }}
+                    >
+                        {isGenerating ? "Generating..." : "Generate"}
+                    </Button>
+
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={imageGenerated}
+                                onChange={(e) => setImageGenerated(e.target.checked)}
+                                color="primary"
+                            />
+                        }
+                        label="Generate Image"
+                        sx={{
+                            '& .MuiFormControlLabel-label': {
+                                color: '#1F2937',
+                                fontSize: '0.9rem',
+                            },
+                        }}
+                    />
+                </Box>
             </Box>
 
-            <Box className="w-full max-w-6xl" sx={{ position: "relative", zIndex: 2 }}>
+            <Box
+                className="w-full max-w-4xl"
+                sx={{
+                    mt: { xs: 6, md: 8 },
+                    background: "rgba(255,255,255,0.45)",
+                    borderRadius: "22px",
+                    padding: { xs: 3, sm: 4 },
+                    border: "1px solid rgba(255,255,255,0.4)",
+                    backdropFilter: "blur(10px)",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+                }}
+            >
                 <Typography
-                    variant="h6"
-                    className="font-semibold mb-6 text-gray-800 text-center"
+                    sx={{
+                        fontSize: { xs: "1.3rem", md: "1.45rem" },
+                        fontWeight: 700,
+                        mb: 1,
+                        background: "linear-gradient(90deg, #1E3A8A, #2563EB, #4F46E5)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                    }}
                 >
-                    Pending posts for approval
+                    Upload Content Schedule
+                </Typography>
+
+                <Typography
+                    variant="body2"
+                    sx={{
+                        mb: 3,
+                        color: "#4B5563",
+                        lineHeight: 1.5,
+                    }}
+                >
+                    Upload a PDF or Google Sheet containing slno, topic, imageGenerated, selectDate, time.
+                    Vidyutva Agentic AI will automatically create Google Calendar events and schedule posts.
+                </Typography>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
+                        alignItems: "center",
+                        gap: 2,
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        component="label"
+                        sx={{
+                            textTransform: "none",
+                            borderRadius: "12px",
+                            background: "#2563EB",
+                            color: "#fff",
+                            px: 3,
+                            py: 1.2,
+                            fontWeight: 600,
+                            "&:hover": { backgroundColor: "#1E4BB8" },
+                        }}
+                    >
+                        Choose File
+                        <input
+                            type="file"
+                            accept=".pdf,.xlsx,.xls"
+                            hidden
+                            onChange={handleFileUpload}
+                        />
+                    </Button>
+
+                    {selectedFile && (
+                        <Typography
+                            variant="body2"
+                            sx={{ color: "#1F2937", wordBreak: "break-all" }}
+                        >
+                            {selectedFile.name}
+                        </Typography>
+                    )}
+                </Box>
+
+                {selectedFile && (
+                    <Button
+                        variant="outlined"
+                        disabled={!selectedFile || isUploading}
+                        onClick={() => selectedFile && uploadFile(selectedFile)}
+                        sx={{
+                            mt: 3,
+                            borderRadius: "12px",
+                            textTransform: "none",
+                            fontWeight: 600,
+                            borderColor: "#2563EB",
+                            color: "#2563EB",
+                            px: 3,
+                            "&:hover": { backgroundColor: "rgba(37,99,235,0.1)" },
+                        }}
+                    >
+                        {isUploading ? "Uploading..." : "Upload & Create Calendar Events"}
+                    </Button>
+                )}
+            </Box>
+
+            <Box
+                className="w-full max-w-6xl"
+                sx={{ position: "relative", zIndex: 2, mt: { xs: 6, md: 8 }, mb: 6 }}
+            >
+                <Typography
+                    sx={{
+                        fontSize: { xs: "1.3rem", md: "1.45rem" },
+                        fontWeight: 700,
+                        textAlign: "center",
+                        mb: 4,
+                        background: "linear-gradient(90deg, #1E3A8A, #2563EB, #4F46E5)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                    }}
+                >
+                    Pending Posts for Approval
                 </Typography>
 
                 {isLoading && (

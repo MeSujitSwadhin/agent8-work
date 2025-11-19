@@ -44,7 +44,10 @@ class ImageService:
                 raise HTTPException(status_code=500, detail=f"Drive upload error: {e}")
             result.append({
                 "googleDriveImageUrl": gd_url,
-                "googleDriveFileId": file_id
+                "googleDriveFileId": file_id,
+                "base64Image": img.data[0].b64_json,
+                "mimeType": "image/png", 
+                "filename": filename
             })
 
         return result

@@ -37,3 +37,10 @@ export interface SinglePostApiResponse {
     message: string;
     data: PostData; // For /post/id
 }
+
+export interface UploadResponse {
+    status: string;
+    fileType: "pdf" | "excel" | string;
+    rowsReceived: number;
+    eventsCreated: string[];
+}
